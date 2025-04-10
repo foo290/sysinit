@@ -1,5 +1,5 @@
 import pytest
-import sys; sys.path.append('/home/ns290/workstation/projects/sysinit')
+import sys; sys.path.append("/home/ns290/workstation/projects/sysinit")
 
 from unittest.mock import patch, MagicMock
 from pathlib import Path
@@ -30,7 +30,7 @@ def test_generate_service_file():
     )
 
     # Generate service file content
-    service_file_content = unit.generate_service_file()
+    service_file_content = unit.generate_service_file_data()
 
     # Check if the service file content is as expected
     assert "Description=Test Service" in service_file_content
@@ -42,7 +42,8 @@ def test_generate_service_file():
     assert "Environment=VAR=value" in service_file_content
     assert "WantedBy=multi-user.target" in service_file_content
 
-def test_write_service_file():
+
+def test_to_file():
     """Test that the service file is written to the disk correctly."""
     exec_start_command = Command("echo 'Starting service'")
     unit = Unit(
@@ -50,15 +51,16 @@ def test_write_service_file():
         description="Test Service",
         exec_start=exec_start_command,
         exec_stop=Command("echo 'Stopping service'"),
+        dry_run=False
     )
 
     # Write the service file
-    unit.write_service_file("/tmp")
+    unit.to_file("/tmp")
 
     # Verify that open was called to create the file in the specified path
     assert os.path.exists("/tmp/test-service.service")
     # Command(f'sudo rm /tmp/test-service.service', sudo=True).execute()
-    os.remove('/tmp/test-service.service')
+    os.remove("/tmp/test-service.service")
 
 
 def test_start(mock_subprocess_run):
@@ -78,7 +80,9 @@ def test_start(mock_subprocess_run):
 def test_stop(mock_subprocess_run):
     """Test that the stop command for the unit works."""
     unit_name = "test-service"
-    unit = Unit(name=unit_name, exec_start=Command("echo 'Starting service'"), exec_stop=Command("echo 'Stopping service'"))
+    unit = Unit(
+        name=unit_name, exec_start=Command("echo 'Starting service'"), exec_stop=Command("echo 'Stopping service'")
+    )
 
     unit.stop = MagicMock()
 
@@ -88,10 +92,13 @@ def test_stop(mock_subprocess_run):
     # Verify that the correct command was executed
     unit.stop.assert_called_once()
 
+
 def test_restart_unit(mock_subprocess_run):
     """Test that the restart command for the unit works."""
     unit_name = "test-service"
-    unit = Unit(name=unit_name, exec_start=Command("echo 'Starting service'"), exec_stop=Command("echo 'Stopping service'"))
+    unit = Unit(
+        name=unit_name, exec_start=Command("echo 'Starting service'"), exec_stop=Command("echo 'Stopping service'")
+    )
     unit.restart = MagicMock()
 
     # Start the unit
@@ -113,6 +120,7 @@ def test_status(mock_subprocess_run):
     # Verify that the correct command was executed
     unit.status.assert_called_once()
 
+
 def test_enable(mock_subprocess_run):
     """Test that the enable command for the unit works."""
     unit_name = "test-service"
@@ -124,6 +132,7 @@ def test_enable(mock_subprocess_run):
 
     # Verify that the correct command was executed
     unit.enable.assert_called_once()
+
 
 def test_reload(mock_subprocess_run):
     """Test that the reload command for the unit works."""
@@ -139,7 +148,7 @@ def test_reload(mock_subprocess_run):
     unit.reload.assert_called_once()
 
 
-def test_from_config():
+def test_from_dict():
     """Test creating a unit from a configuration dictionary."""
     config = {
         "name": "test-service",
@@ -153,7 +162,7 @@ def test_from_config():
         "wanted_by": "multi-user.target",
     }
 
-    unit = Unit.from_config(config)
+    unit = Unit.from_dict(config)
 
     # Check if the unit is created with the correct attributes
     print(unit.exec_stop)
@@ -199,8 +208,8 @@ def test_from_service_file():
     # Check if the unit is created with the correct attributes
     assert unit.name == "test-service"
     assert unit.description == "Test Service"
-    assert unit.exec_start == "echo 'Starting service'"
-    assert unit.exec_stop == "echo 'Stopping service'"
+    assert unit.exec_start.command_str == "echo 'Starting service'"
+    assert unit.exec_stop.command_str == "echo 'Stopping service'"
     assert unit.working_directory == "/tmp"
     assert unit.restart == "always"
     assert unit.user == "testuser"
@@ -209,5 +218,3 @@ def test_from_service_file():
 
     # Clean up the mock service file
     Path(mock_service_file).unlink()
-
-

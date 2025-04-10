@@ -20,5 +20,5 @@ class Command:
     def execute(self):
         if not self.engine:
             raise RuntimeError("CommandEngine not attached.")
-        
+
         return self.engine.run(self.command_str, sudo=self.sudo)

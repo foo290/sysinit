@@ -8,7 +8,7 @@ class Logger:
         self.logger.setLevel(level)
         self.logger.propagate = False  # avoid duplicate logs in some environments
 
-        formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+        formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
 
         # Console handler
         if not any(isinstance(h, logging.StreamHandler) for h in self.logger.handlers):

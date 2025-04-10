@@ -4,7 +4,6 @@ import yaml
 from sysinit.core.unit import Unit
 
 
-
 class UnitManager:
     def __init__(self, config_path: Optional[str] = None):
         self.units: Dict[str, Unit] = {}
@@ -14,9 +13,9 @@ class UnitManager:
     def _load_from_config(self, path: str):
         with open(path) as f:
             config = yaml.safe_load(f)
-            
+
         for svc_data in config.get("services", []):
-            unit = Unit.from_config(svc_data)
+            unit = Unit.from_dict(svc_data)
             self.add_unit(unit)
 
     def add_unit(self, unit: Unit):
@@ -33,6 +32,32 @@ class UnitManager:
         for unit in self.units.values():
             unit.stop()
 
+    def start_service(self, service_name: str):
+        unit = self.units.get(service_name)
+        if not unit:
+            raise Exception(f"No unit found with the name: {service_name}")
+
+        unit.start()
+
+    def stop_service(self, service_name: str):
+        unit = self.units.get(service_name)
+        if not unit:
+            raise Exception(f"No unit found with the name: {service_name}")
+
+        unit.stop()
+
+    def reload_service(self, service_name: str):
+        unit = self.units.get(service_name)
+        if not unit:
+            raise Exception(f"No unit found with the name: {service_name}")
+        unit.reload_unit()
+    
+    def restart_service(self, service_name: str):
+        unit = self.units.get(service_name)
+        if not unit:
+            raise Exception(f"No unit found with the name: {service_name}")
+        unit.restart_unit()
+
     def start_all(self):
         for unit in self.units.values():
             unit.start()
@@ -43,4 +68,4 @@ class UnitManager:
 
     def reload_all(self):
         for unit in self.units.values():
-            unit.reload()
+            unit.reload_unit()

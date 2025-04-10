@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock, patch, mock_open
-import sys; sys.path.append('/home/ns290/workstation/projects/sysinit')
+import sys; sys.path.append("/home/ns290/workstation/projects/sysinit")
 
 
 from sysinit.core.unit_manager import UnitManager
@@ -63,17 +63,17 @@ def test_stop_all(unit_manager, mock_unit):
 def test_reload_all(unit_manager, mock_unit):
     """Test the reload_all method."""
     unit_manager.reload_all()
-    mock_unit.reload.assert_called_once()
+    mock_unit.reload_unit.assert_called_once()
 
 
-def test_load_from_config(mock_unit, monkeypatch):
+def test_load_from_dict(mock_unit, monkeypatch):
     """Test loading units from a YAML configuration with mocked open() function."""
     mock_unit_data = {
         "name": "mock_service",
         "description": "Mock service",
         "exec_start": "mock_exec_start",
     }
-    unit = Unit.from_config(mock_unit_data)
+    unit = Unit.from_dict(mock_unit_data)
 
     # Mock the content of the YAML file as a string
     mock_yaml_content = """
@@ -82,13 +82,13 @@ def test_load_from_config(mock_unit, monkeypatch):
           description: Mock service
           exec_start: mock_exec_start
     """
-    
+
     # Mock open to simulate reading the YAML file content
     with patch("builtins.open", mock_open(read_data=mock_yaml_content)):
         # Call UnitManager with the mocked YAML file
         manager = UnitManager(config_path="mock_path.yaml")
 
     # Check if the `from_config` method was called with the correct data
-    assert unit.name == mock_unit_data['name']
+    assert unit.name == mock_unit_data["name"]
     assert isinstance(unit.exec_start, Command)
     assert len(manager.units) == 1
