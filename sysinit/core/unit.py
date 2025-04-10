@@ -55,7 +55,25 @@ class Unit:
 
     @property
     def is_enabled(self):
-        return path_exists(join_path(self.systemd_dir, self._systemd_enabled_dir, self.service_file_name))
+        res = Command(
+            f"systemctl is-enabled {self.service_file_name}",
+            sudo=False,
+            description=f"checking enabled: {self.name}",
+            verbose=self.verbose,
+            dry_run=self.dry_run,
+        ).execute()
+        return res.stdout.strip() == 'enabled'
+
+    @property
+    def is_active(self):
+        res = Command(
+            f"systemctl is-active {self.service_file_name}",
+            sudo=False,
+            description=f"checking is-active: {self.name}",
+            verbose=self.verbose,
+            dry_run=self.dry_run,
+        ).execute()
+        return res.stdout.strip() == 'active'
 
     def load(self):
         if self.is_loaded:
@@ -155,7 +173,7 @@ class Unit:
         return info
 
     @classmethod
-    def from_dict(cls, config: dict):
+    def from_dict(cls, config: dict, *_, **kwargs):
         # todo: fix this for commands
         start_cmd = config.get("exec_start")
         end_cmd = config.get("exec_stop")
@@ -173,10 +191,12 @@ class Unit:
             after=config.get("after"),
             requires=config.get("requires"),
             service_type=config.get("type"),
+
+            **kwargs
         )
 
     @classmethod
-    def from_service_file(cls, filepath: str):
+    def from_service_file(cls, filepath: str, *_, **kwargs):
         config = {}
         with open(filepath) as f:
             for line in f:
@@ -203,6 +223,9 @@ class Unit:
             after=config.get("after"),
             requires=config.get("requires"),
             service_type=config.get("type"),
+            
+            # additional shit goes here
+            **kwargs
         )
 
     def generate_service_file_data(self) -> str:
@@ -238,7 +261,7 @@ class Unit:
 
         # Use subprocess to run the echo command with sudo to write the service file
         service_content = self.generate_service_file_data()
-        command_str = f"echo '{service_content}' > {path}"
+        command_str = f"echo '{service_content}' | sudo tee {path} > /dev/null"
         command = Command(
             command_str=command_str,
             sudo=True,
