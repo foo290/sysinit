@@ -52,7 +52,7 @@ class UnitManager:
             raise Exception(f"No unit found with the name: {service_name}")
 
         unit.enable()
-    
+
     def disable_service(self, service_name: str):
         unit = self.units.get(service_name)
         if not unit:
@@ -65,19 +65,19 @@ class UnitManager:
         if not unit:
             raise Exception(f"No unit found with the name: {service_name}")
         unit.reload_unit()
-    
+
     def load_service(self, service_name: str):
         unit = self.units.get(service_name)
         if not unit:
             raise Exception(f"No unit found with the name: {service_name}")
         unit.load()
-    
+
     def unload_service(self, service_name: str):
         unit = self.units.get(service_name)
         if not unit:
             raise Exception(f"No unit found with the name: {service_name}")
         unit.unload()
-    
+
     def restart_service(self, service_name: str):
         unit = self.units.get(service_name)
         if not unit:
@@ -95,20 +95,19 @@ class UnitManager:
     def reload_all(self):
         for unit in self.units.values():
             unit.reload_unit()
-    
+
     def load_all(self):
         for unit in self.units.values():
             unit.load()
-    
+
     def unload_all(self):
         for unit in self.units.values():
             unit.unload()
-    
+
     def enable_all(self):
         for unit in self.units.values():
             unit.enable()
-    
+
     def disable_all(self):
         for unit in self.units.values():
             unit.disable()
-    

@@ -1,5 +1,7 @@
 import pytest
-import sys; sys.path.append("/home/ns290/workstation/projects/sysinit")
+import sys
+
+sys.path.append("/home/ns290/workstation/projects/sysinit")
 
 from unittest.mock import patch, MagicMock
 from pathlib import Path
@@ -51,7 +53,7 @@ def test_to_file():
         description="Test Service",
         exec_start=exec_start_command,
         exec_stop=Command("echo 'Stopping service'"),
-        dry_run=False
+        dry_run=False,
     )
 
     # Write the service file

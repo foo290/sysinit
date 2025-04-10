@@ -62,7 +62,7 @@ class Unit:
             verbose=self.verbose,
             dry_run=self.dry_run,
         ).execute()
-        return res.stdout.strip() == 'enabled'
+        return res.stdout.strip() == "enabled"
 
     @property
     def is_active(self):
@@ -73,7 +73,7 @@ class Unit:
             verbose=self.verbose,
             dry_run=self.dry_run,
         ).execute()
-        return res.stdout.strip() == 'active'
+        return res.stdout.strip() == "active"
 
     def load(self):
         if self.is_loaded:
@@ -191,8 +191,7 @@ class Unit:
             after=config.get("after"),
             requires=config.get("requires"),
             service_type=config.get("type"),
-
-            **kwargs
+            **kwargs,
         )
 
     @classmethod
@@ -223,9 +222,8 @@ class Unit:
             after=config.get("after"),
             requires=config.get("requires"),
             service_type=config.get("type"),
-            
             # additional shit goes here
-            **kwargs
+            **kwargs,
         )
 
     def generate_service_file_data(self) -> str:
@@ -256,7 +254,7 @@ class Unit:
         directory = directory or self.systemd_dir
         if not path_exists(directory):
             raise ValueError(f"path: {directory} does not exists to write service file")
-        
+
         path = join_path(directory, self.service_file_name)
 
         # Use subprocess to run the echo command with sudo to write the service file
