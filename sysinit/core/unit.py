@@ -3,7 +3,6 @@ from pathlib import Path
 from sysinit.core.command import Command
 from sysinit.utils import path_exists, join_path
 import os
-import json
 
 
 class Unit:
