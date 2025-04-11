@@ -1,9 +1,5 @@
 import pytest
 from unittest.mock import MagicMock, patch, mock_open
-import sys
-
-sys.path.append("/home/ns290/workstation/projects/sysinit")
-
 
 from sysinit.core.unit_manager import UnitManager
 from sysinit.core.unit import Unit, Command

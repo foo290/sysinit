@@ -1,7 +1,4 @@
 import pytest
-import sys
-
-sys.path.append("/home/ns290/workstation/projects/sysinit")
 
 from unittest.mock import patch, MagicMock
 from pathlib import Path
@@ -61,8 +58,7 @@ def test_to_file():
 
     # Verify that open was called to create the file in the specified path
     assert os.path.exists("/tmp/test-service.service")
-    # Command(f'sudo rm /tmp/test-service.service', sudo=True).execute()
-    os.remove("/tmp/test-service.service")
+    Command("rm /tmp/test-service.service", sudo=True).execute()
 
 
 def test_start(mock_subprocess_run):

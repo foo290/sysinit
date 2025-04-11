@@ -1,11 +1,11 @@
 """
 UnitManager handles the orchestration and lifecycle of service units.
 
-It provides methods to load units from a configuration file and perform 
-various operations like start, stop, enable, disable, reload, and restart 
+It provides methods to load units from a configuration file and perform
+various operations like start, stop, enable, disable, reload, and restart
 both on individual services and on all services collectively.
 
-Author: Nitin Sharma  
+Author: Nitin Sharma
 Docs by ChatGPT
 """
 

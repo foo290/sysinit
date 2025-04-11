@@ -1,8 +1,8 @@
 """
 command.py
 
-This module provides a simple wrapper around shell commands to be executed 
-using the CommandEngine, allowing optional sudo execution, verbosity, dry-run 
+This module provides a simple wrapper around shell commands to be executed
+using the CommandEngine, allowing optional sudo execution, verbosity, dry-run
 mode, and logging. Acts as an interface for interacting with shell via Python.
 
 Author: Nitin Sharma
@@ -26,13 +26,13 @@ class Command:
     """
 
     def __init__(
-        self, 
-        command_str: str, 
-        sudo: bool = False, 
+        self,
+        command_str: str,
+        sudo: bool = False,
         description: str | None = None,
-        verbose: bool = True, 
-        dry_run: bool = False, 
-        log_file: str | None = None
+        verbose: bool = True,
+        dry_run: bool = False,
+        log_file: str | None = None,
     ):
         """
         Initializes a Command instance.

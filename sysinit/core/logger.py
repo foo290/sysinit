@@ -30,7 +30,7 @@ class Logger:
         name: str = "AppLogger",
         level: int = logging.INFO,
         log_to_file: bool = False,
-        log_file: str = "logs/app.log"
+        log_file: str = "logs/app.log",
     ):
         """
         Initializes the Logger instance with console and optional file handler.

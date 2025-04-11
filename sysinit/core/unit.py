@@ -60,6 +60,7 @@ class Unit:
         verbose: bool = False,
         dry_run: bool = True,
         systemd_dir: str = "/etc/systemd/system",
+        enable_this_service: bool = False,
     ):
         self.name = name
         self.description = description
@@ -80,6 +81,7 @@ class Unit:
 
         self.service_file_name = f"{self.name}.service"
         self._systemd_enabled_dir = join_path(self.systemd_dir, f"{self.wanted_by}.wants")
+        self.enable_this_service = enable_this_service
 
     @property
     def unit_abs_path(self) -> str:
@@ -134,9 +136,8 @@ class Unit:
             dry_run=self.dry_run,
         ).execute()
 
-    def start(self):
+    def _start(self):
         """Starts the service using systemctl."""
-        self.setup()
         Command(
             f"systemctl start {self.service_file_name}",
             sudo=True,
@@ -211,11 +212,18 @@ class Unit:
             dry_run=self.dry_run,
         ).execute()
 
-    def setup(self):
-        """Ensures service is loaded and systemd daemon is reloaded."""
+    def start(self, force: bool = False):
+        """Starts the service for the first time with all the setup it needs"""
         if not self.is_loaded:
             self.load()
-        self.reload_daemon()
+            self.reload_daemon()
+
+        if self.enable_this_service and not self.is_enabled:
+            self.enable()
+            self.reload_daemon()
+
+        if not self.is_active or force:
+            self._start()
 
     def info(self) -> Dict:
         """Returns basic info about the unit and its status."""
@@ -223,7 +231,18 @@ class Unit:
             **vars(self),
             "is_enabled": self.is_enabled,
             "is_loaded": self.is_loaded,
+            "is_active": self.is_active,
         }
+
+    def disarm_service(self):
+        if self.is_active:
+            self.stop()
+
+        if self.is_enabled:
+            self.disable()
+
+        if self.is_loaded:
+            self.unload()
 
     @classmethod
     def from_dict(cls, config: dict, **kwargs) -> "Unit":

@@ -3,7 +3,7 @@ Utility functions for common filesystem operations.
 
 This module includes lightweight helper functions used across the unit management system.
 
-Author: Nitin Sharma  
+Author: Nitin Sharma
 Docs Author: ChatGPT
 """
 
