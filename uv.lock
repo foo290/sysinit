@@ -3,6 +3,12 @@ revision = 1
 requires-python = ">=3.12"
 
 [[package]]
+name = "accessify"
+version = "0.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f1/b9/7caef6d844143bf0383eb0513f5df212fe0bd5f50bd3b4a940043b868f35/accessify-0.3.1.tar.gz", hash = "sha256:471905fd15e128c51e37b240804bb2e44f0be887ba105cacf90ef6725b26278a", size = 20736 }
+
+[[package]]
 name = "black"
 version = "25.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -147,6 +153,7 @@ name = "sysinit"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "accessify" },
     { name = "black" },
     { name = "pytest" },
     { name = "pyyaml" },
@@ -154,6 +161,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "accessify", specifier = ">=0.3.1" },
     { name = "black", specifier = ">=25.1.0" },
     { name = "pytest", specifier = ">=8.3.5" },
     { name = "pyyaml", specifier = ">=6.0.2" },

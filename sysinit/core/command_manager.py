@@ -86,10 +86,10 @@ class CommandEngine:
         if result.returncode != 0 and result.stderr:
             self.logger.error("🔴 Command failed")
             cmd_op = result.stderr.strip()
-            self.logger.info(f"Command OP: \n{cmd_op}" if cmd_op else "... : [NO OUTPUT]")
+            self.logger.info(f"Command OP: {cmd_op}" if cmd_op else "... : [NO OUTPUT]")
         else:
             cmd_op = result.stdout.strip()
-            self.logger.info(f"Command OP: \n{cmd_op}" if cmd_op else "... : [NO OUTPUT]")
+            self.logger.info(f"Command OP: {cmd_op}" if cmd_op else "... : [NO OUTPUT]")
             self.logger.info("🟢 Command execution successful ...OK")
 
         return result

@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "accessify>=0.3.1",
     "black>=25.1.0",
     "pytest>=8.3.5",
     "pyyaml>=6.0.2",

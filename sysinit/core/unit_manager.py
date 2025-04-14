@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Dict, Optional, List
 import yaml
 from sysinit.core.unit import Unit
+from sysinit.utils import validate_yaml_config
 
 
 class UnitManager:
@@ -35,11 +36,17 @@ class UnitManager:
             path (str): Path to the YAML config file.
         """
         with open(path) as f:
-            config = yaml.safe_load(f)
+            config: dict = yaml.safe_load(f)
+        
+        validate_yaml_config(config)
 
         for svc_data in config.get("services", []):
-            unit = Unit.from_dict(svc_data)
-            self.add_unit(unit)
+            for service_name, service_data in svc_data.items():
+                unit_config = service_data.get('unit_config', {})
+                command_config = service_data.get('command_config', {})
+
+                unit = Unit.from_dict(unit_config, **command_config)
+                self.add_unit(unit)
 
     def add_unit(self, unit: Unit):
         """
@@ -223,3 +230,8 @@ class UnitManager:
         """
         for unit in self.units.values():
             unit.disable()
+    
+    def teardown(self):
+        for unit in self.all_units:
+            unit.disarm_service()
+

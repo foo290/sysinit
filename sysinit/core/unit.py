@@ -47,20 +47,22 @@ class Unit:
         self,
         name: str,
         description: str = "",
+        unit: Optional[str] = None,
         exec_start: Optional[Command] = None,
         exec_stop: Optional[Command] = None,
         working_directory: Optional[str] = None,
-        service_type: Optional[str] = "oneshot",
+        service_type: Optional[str] = None,
         restart: Optional[str] = None,
         user: Optional[str] = None,
         environment: Optional[Dict[str, str]] = None,
         wanted_by: str = "multi-user.target",
         after: Optional[str] = None,
         requires: Optional[str] = None,
+        remain_after_exit: bool = False,
         verbose: bool = False,
         dry_run: bool = True,
         systemd_dir: str = "/etc/systemd/system",
-        enable_this_service: bool = False,
+        enable_service: bool = False,
     ):
         self.name = name
         self.description = description
@@ -73,15 +75,16 @@ class Unit:
         self.wanted_by = wanted_by
         self.after = after
         self.requires = requires
-        self.service_type = service_type
+        self.service_type = service_type or "oneshot"
+        self.remain_after_exit = remain_after_exit
 
         self.verbose = verbose
         self.dry_run = dry_run
         self.systemd_dir = systemd_dir
 
-        self.service_file_name = f"{self.name}.service"
+        self.service_file_name = unit or f"{self.name}.service" 
         self._systemd_enabled_dir = join_path(self.systemd_dir, f"{self.wanted_by}.wants")
-        self.enable_this_service = enable_this_service
+        self.enable_this_service = enable_service
 
     @property
     def unit_abs_path(self) -> str:
@@ -103,7 +106,7 @@ class Unit:
             verbose=self.verbose,
             dry_run=self.dry_run,
         ).execute()
-        return res.stdout.strip() == "enabled"
+        return res.stdout.strip() == "enabled" if res and res.stdout else False
 
     @property
     def is_active(self) -> bool:
@@ -115,7 +118,7 @@ class Unit:
             verbose=self.verbose,
             dry_run=self.dry_run,
         ).execute()
-        return res.stdout.strip() == "active"
+        return res.stdout.strip() == "active" if res and res.stdout else False
 
     def load(self):
         """Creates and writes the service file to systemd directory."""
@@ -263,6 +266,7 @@ class Unit:
             after=config.get("after"),
             requires=config.get("requires"),
             service_type=config.get("type"),
+            remain_after_exit=config.get('RemainAfterExit', False),
             **kwargs,
         )
 
@@ -305,6 +309,7 @@ class Unit:
             "",
             "[Service]",
             f"Type={self.service_type}",
+            f"RemainAfterExit={'yes' if self.remain_after_exit else 'no'}",
             f"WorkingDirectory={self.working_directory}" if self.working_directory else "",
             f"ExecStart={self.exec_start.command_str}" if self.exec_start else "",
             f"ExecStop={self.exec_stop.command_str}" if self.exec_stop else "",
@@ -335,3 +340,9 @@ class Unit:
             description=f"Writing service file for {self.name} to {directory}",
             dry_run=self.dry_run,
         ).execute()
+    
+    def __str__(self):
+        return f"<{self.__class__.__name__}: {self.service_file_name} object at {hex(id(self))}>"
+
+    def __repr__(self):
+        return self.__str__()

@@ -1,0 +1,34 @@
+services:
+  - fileserver:
+      unit_config: 
+        name: fileserver
+        unit: fileserver.service
+        autostart: true
+        Type: oneshot
+        description: fileserver service
+        working_directory: path/to/filebrowser_server
+        RemainAfterExit: yes
+        exec_start: docker compose up -d
+        exec_stop: docker compose down
+      command_config:
+        dry_run: false
+        enable_service: false
+  
+  - metabase:
+      unit_config: 
+        name: metabase
+        unit: metabase.service
+        autostart: true
+        Type: oneshot
+        description: metabase service
+        working_directory: path/to/metabase_server
+        RemainAfterExit: yes
+        exec_start: docker compose up -d
+        exec_stop: docker compose down
+      command_config:
+        dry_run: false
+        enable_service: false
+      
+
+
+
