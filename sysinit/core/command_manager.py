@@ -38,7 +38,7 @@ class CommandEngine:
         dry_run: bool = False,
         log_file: str | None = None,
         title: str | None = None,
-        log_level: int = logging.DEBUG,
+        log_level: int = logging.INFO,
     ):
         """
         Initializes the CommandEngine.
@@ -76,7 +76,7 @@ class CommandEngine:
         if sudo:
             cmd = f"sudo {cmd}"
 
-        self.logger.info(f"Running command: {cmd}")
+        self.logger.debug(f"Running command: {cmd}")
         if self.dry_run:
             self.logger.warning("[SKIP]: Dry run: skipped execution.")
             return None
@@ -86,10 +86,10 @@ class CommandEngine:
         if result.returncode != 0 and result.stderr:
             self.logger.error("🔴 Command failed")
             cmd_op = result.stderr.strip()
-            self.logger.info(f"Command OP: {cmd_op}" if cmd_op else "... : [NO OUTPUT]")
+            self.logger.debug(f"Command OP: {cmd_op}" if cmd_op else "... : [NO OUTPUT]")
         else:
             cmd_op = result.stdout.strip()
-            self.logger.info(f"Command OP: {cmd_op}" if cmd_op else "... : [NO OUTPUT]")
-            self.logger.info("🟢 Command execution successful ...OK")
+            self.logger.debug(f"Command OP: {cmd_op}" if cmd_op else "... : [NO OUTPUT]")
+            self.logger.debug("🟢 Command execution successful ...OK")
 
         return result

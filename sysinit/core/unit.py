@@ -82,7 +82,7 @@ class Unit:
         self.dry_run = dry_run
         self.systemd_dir = systemd_dir
 
-        self.service_file_name = unit or f"{self.name}.service" 
+        self.service_file_name = unit or f"{self.name}.service"
         self._systemd_enabled_dir = join_path(self.systemd_dir, f"{self.wanted_by}.wants")
         self.enable_this_service = enable_service
 
@@ -177,13 +177,7 @@ class Unit:
 
     def status(self):
         """Prints the status of the service using systemctl."""
-        Command(
-            f"systemctl status {self.service_file_name}",
-            sudo=True,
-            description=f"Status: {self.name} service",
-            verbose=self.verbose,
-            dry_run=self.dry_run,
-        ).execute()
+        return f"Service: {self.name}, Active: {self.is_active}, Loaded: {self.is_loaded}, Enabled: {self.is_enabled}"
 
     def enable(self):
         """Enables the service to start on boot."""
@@ -266,7 +260,7 @@ class Unit:
             after=config.get("after"),
             requires=config.get("requires"),
             service_type=config.get("type"),
-            remain_after_exit=config.get('RemainAfterExit', False),
+            remain_after_exit=config.get("RemainAfterExit", False),
             **kwargs,
         )
 
@@ -340,7 +334,7 @@ class Unit:
             description=f"Writing service file for {self.name} to {directory}",
             dry_run=self.dry_run,
         ).execute()
-    
+
     def __str__(self):
         return f"<{self.__class__.__name__}: {self.service_file_name} object at {hex(id(self))}>"
 

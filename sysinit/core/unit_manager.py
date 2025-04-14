@@ -14,6 +14,7 @@ from typing import Dict, Optional, List
 import yaml
 from sysinit.core.unit import Unit
 from sysinit.utils import validate_yaml_config
+from sysinit.core.logger import Logger
 
 
 class UnitManager:
@@ -28,6 +29,8 @@ class UnitManager:
         if config_path:
             self._load_from_config(config_path)
 
+        self.logger = Logger(name=self.__class__.__name__).get()
+
     def _load_from_config(self, path: str):
         """
         Load unit definitions from a YAML configuration file.
@@ -37,13 +40,13 @@ class UnitManager:
         """
         with open(path) as f:
             config: dict = yaml.safe_load(f)
-        
+
         validate_yaml_config(config)
 
         for svc_data in config.get("services", []):
             for service_name, service_data in svc_data.items():
-                unit_config = service_data.get('unit_config', {})
-                command_config = service_data.get('command_config', {})
+                unit_config = service_data.get("unit_config", {})
+                command_config = service_data.get("command_config", {})
 
                 unit = Unit.from_dict(unit_config, **command_config)
                 self.add_unit(unit)
@@ -230,8 +233,17 @@ class UnitManager:
         """
         for unit in self.units.values():
             unit.disable()
-    
+
     def teardown(self):
         for unit in self.all_units:
             unit.disarm_service()
 
+    def status_service(self, service_name: str):
+        unit = self.units.get(service_name)
+        if not unit:
+            raise Exception(f"No unit found with the name: {service_name}")
+        unit.status()
+
+    def status_all(self):
+        for unit in self.all_units:
+            self.logger.info(unit.status())

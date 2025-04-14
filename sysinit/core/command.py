@@ -9,6 +9,8 @@ Author: Nitin Sharma
 Docs by ChatGPT
 """
 
+import logging
+
 from sysinit.core.command_manager import CommandEngine
 
 
@@ -33,6 +35,7 @@ class Command:
         verbose: bool = True,
         dry_run: bool = False,
         log_file: str | None = None,
+        log_level: str = logging.INFO,
     ):
         """
         Initializes a Command instance.
@@ -50,11 +53,9 @@ class Command:
         self.description = description or command_str
         self.verbose = verbose
         self.dry_run = dry_run
+        self.log_level = log_level
 
-        self.engine = CommandEngine(
-            verbose=self.verbose,
-            dry_run=self.dry_run,
-        )
+        self.engine = CommandEngine(verbose=self.verbose, dry_run=self.dry_run, log_level=self.log_level)
 
     def attach_engine(self, engine: CommandEngine) -> None:
         """
