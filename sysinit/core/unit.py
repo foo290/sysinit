@@ -276,6 +276,12 @@ class Unit:
 
         if not config:
             raise ValueError(f"Empty or invalid unit file: {filepath}")
+        
+        remain_after_exit = config.get('remainafterexit')
+        if remain_after_exit:
+            remain_after_exit = True if remain_after_exit == 'yes' else False
+        else:
+            remain_after_exit = None
 
         return cls(
             name=Path(filepath).stem,
@@ -290,6 +296,7 @@ class Unit:
             after=config.get("after"),
             requires=config.get("requires"),
             service_type=config.get("type"),
+            remain_after_exit=remain_after_exit,
             **kwargs,
         )
 
