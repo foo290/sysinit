@@ -1,15 +1,65 @@
+# pyproject.toml
+
 [project]
 name = "sysinit"
-version = "0.1.0"
-description = "Add your description here"
+version = "1.0.0"
+description = "A lightweight Python library for managing systemd service units via YAML configuration, with an interactive terminal."
 readme = "README.md"
-requires-python = ">=3.12"
-dependencies = [
-    "accessify>=0.3.1",
-    "black>=25.1.0",
-    "pytest>=8.3.5",
-    "pyyaml>=6.0.2",
+requires-python = ">=3.8" # Ensure your code supports this
+license = { text = "MIT" }
+authors = [
+    { name = "Nitin Sharma" }, # Replace with your actual email
+]
+keywords = ["systemd", "service", "manager", "init", "process", "daemon", "linux", "yaml", "repl", "terminal", "cli"]
+classifiers = [
+    "Development Status :: 3 - Alpha", # Or 4 - Beta if more mature
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux", # Clearly states Linux dependency
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Terminals :: Terminal Emulators/X Terminals", # Added for interactive aspect
 ]
 
+# Runtime dependencies - needed to *use* the library and the basic CLI/REPL
+dependencies = [
+    "pyyaml>=6.0.2",
+    "typer[all]>=0.9.0", # Using Typer for the interactive shell/CLI
+]
+
+[project.optional-dependencies]
+# Development dependencies - for testing, formatting, building, and the interactive shell
+dev = [
+    "black>=25.1.0",
+    "pytest>=8.3.5",
+    "build",   # Tool for building packages
+    "twine",   # Tool for uploading packages
+    "ipython>=7.0", # Required for the interactive shell command
+    # Add pytest-cov if you want coverage reports
+    # "pytest-cov",
+]
+
+[project.urls]
+# Replace with your actual URLs
+Homepage = "https://github.com/foo290/sysinit"
+
+# Script entry point for the Typer application
+[project.scripts]
+sysinit-term = "sysinit.cli:app"
+
+# Configuration for the Black code formatter
 [tool.black]
 line-length = 120
+
+# Configuration for build tools
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
