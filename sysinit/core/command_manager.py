@@ -79,14 +79,13 @@ class CommandEngine:
         self.logger.debug(f"Running command: {cmd}")
         if self.dry_run:
             self.logger.warning("[SKIP]: Dry run: skipped execution.")
-            return None
+            return
 
         result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
 
         if result.returncode != 0 and result.stderr:
-            self.logger.error("🔴 Command failed")
             cmd_op = result.stderr.strip()
-            self.logger.debug(f"Command OP: {cmd_op}" if cmd_op else "... : [NO OUTPUT]")
+            self.logger.error(f"🔴 Command failed: {cmd_op}")
         else:
             cmd_op = result.stdout.strip()
             self.logger.debug(f"Command OP: {cmd_op}" if cmd_op else "... : [NO OUTPUT]")

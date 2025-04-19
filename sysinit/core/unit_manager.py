@@ -70,7 +70,7 @@ class UnitManager:
         Returns:
             Optional[Unit]: The unit if found, else None.
         """
-        return self.units.get(name)
+        return self.units[name]
 
     @property
     def all_units(self) -> List[Unit]:
