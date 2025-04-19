@@ -2,7 +2,7 @@
 
 [project]
 name = "sysinit"
-version = "1.0.0"
+version = "1.0.2"
 description = "A lightweight Python library for managing systemd service units via YAML configuration, with an interactive terminal."
 readme = "README.md"
 requires-python = ">=3.9" # Ensure your code supports this
@@ -34,6 +34,7 @@ dependencies = [
     "pytest-mock>=3.14.0",
     "pyyaml>=6.0.2",
     "typer[all]>=0.9.0", # Using Typer for the interactive shell/CLI
+    "ipython>=7.0"
 ]
 
 [project.optional-dependencies]

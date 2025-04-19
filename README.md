@@ -36,7 +36,10 @@
 
 ```bash
 # Install from PyPI
-pip install sysinit # <-- Replace 'sysinit' with your actual package name if different
+pip install sysinit
+
+# uv install
+uv add sysinit
 
 # For development (includes testing and formatting tools)
 pip install "sysinit[dev]"
